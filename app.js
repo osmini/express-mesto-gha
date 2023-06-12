@@ -39,4 +39,3 @@ app.use(routes); // подключаем обработку всех роуте�
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-

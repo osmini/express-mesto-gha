@@ -19,4 +19,3 @@ router.patch('/me/avatar', updatetAvatar);
 
 // экспортируем модуль
 module.exports = router;
-

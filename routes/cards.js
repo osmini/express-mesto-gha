@@ -19,5 +19,3 @@ router.delete('/:cardId/likes', deleteLike);
 
 // экспортируем модуль
 module.exports = router;
-
-
