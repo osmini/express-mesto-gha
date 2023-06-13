@@ -7,27 +7,34 @@ const mongoose = require('mongoose');  //подключаем mongoose
 const cardsSchame = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
-    minlength: 2,
-    maxlength: 30
+    required: [true, 'Поле "name" должно быть заполнено'],
+    minlength: [2, 'Минимальная длина поля "name" - 2'],
+    maxlength: [30, 'Максимальная длина поля "name" - 30'],
   },
   link: {
-    type: Object,
-    required: true
+    type: String,
+    required: [true, 'Поле "name" должно быть заполнено']
   },
   owner: {
-    type: String,
-    required: true
+    type: mongoose.Schema.Types.ObjectId,
+    required: [true, 'Поле "name" должно быть заполнено']
   },
   likes: {
-    type: Array,
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+      },
+    ],
     default: []
   },
   createdAt: {
     type: Date,
     default: Date.now
   },
-
+},
+{
+  versionKey: false,
 })
 
 module.exports = mongoose.model('card', cardsSchame);

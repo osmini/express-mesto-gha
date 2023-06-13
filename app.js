@@ -2,13 +2,13 @@
 const express = require('express'); // импортируем библиотеку express
 const bodyParser = require('body-parser'); // импортируем парсер json
 const routes = require('./routes/index'); // импортируем модуль всех роутеров приложения
-const mongoose = require('mongoose');  //подключаем mongoose
+const mongoose = require('mongoose'); //подключаем mongoose
 
-const {PORT = 3000} = process.env // вынесли порт по умолчанию в переменную окружения проекта
+const {PORT = 3000} = process.env; // вынесли порт по умолчанию в переменную окружения проекта
 
 // подключение к БД
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
-  useNewUrlParser: true
+  useNewUrlParser: true,
 })
 .then(() => {
   console.log('connected to db');
@@ -21,7 +21,7 @@ app.use(bodyParser.json()); // подключаем обработку json вс
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '648476afc6258b5f9eee415e' // вставьте сюда _id созданного в предыдущем пункте пользователя
+    _id: '648476afc6258b5f9eee415e', // вставьте сюда _id созданного в предыдущем пункте пользователя
   };
 
   next();

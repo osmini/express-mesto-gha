@@ -44,6 +44,9 @@ const deleteCard = (req, res) => {
       })
     })
     .catch((err) =>{
+      if(err.name === 'CastError'){
+        return res.status(400).send('Передан некорректный id карточки');
+      };
       return res.status(500).send(err.message);
     })
 };

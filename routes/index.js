@@ -5,4 +5,9 @@ const usersCards = require('./cards'); // импортируем модуль р
 router.use('/users', usersRouters); // подключаем обработку роутеров пользователей
 router.use('/cards', usersCards); // подключаем обработку роутеров карточек
 
+// обработка несуществующего роута
+router.use((req, res, next) => {
+  res.status(404).send({message: 'Маршрут не найден'})
+});
+
 module.exports = router;
