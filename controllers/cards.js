@@ -6,7 +6,7 @@ const getCards = (req, res) => {
   return Card.find({})
     .then((cards) => {
       if(!cards){
-        return res.status(404).send('Карточки не найдены');
+        return res.status(404).send({message:'Карточки не найдены'});
       };
       return res.status(200).send(cards);
     })
@@ -25,7 +25,7 @@ const createCards = (req, res) => {
   })
   .catch((err) =>{
     if (err.name === 'ValidationError'){
-      return res.status(400).send('переданы некорректные данные карточки');
+      return res.status(400).send({message:'переданы некорректные данные карточки'});
     };
     return res.status(500).send(err.message);
   })
@@ -36,16 +36,16 @@ const deleteCard = (req, res) => {
   Card.findById(req.params.cardId)
     .then((card) => {
       if(!card){
-        return res.status(404).send('Карточка не найдена');
+        return res.status(404).send({message:'Карточка не найдена'});
       };
       Card.deleteOne(card)
       .then(() => {
-        return res.status(200).send('Карточка удалена');
+        return res.status(200).send({message:'Карточка удалена'});
       })
     })
     .catch((err) =>{
       if(err.name === 'CastError'){
-        return res.status(400).send('Передан некорректный id карточки');
+        return res.status(400).send({message:'Передан некорректный id карточки'});
       };
       return res.status(500).send(err.message);
     })
@@ -59,7 +59,7 @@ const createLike = (req, res) =>
     { new: true })
     .then((card) => {
       if(!card){
-        return res.status(404).send('Карточка не найдена');
+        return res.status(404).send({message:'Карточка не найдена'});
       };
       return res.status(200).send(cards);
     })
@@ -74,7 +74,7 @@ const deleteLike = (req, res) => Card.findByIdAndUpdate(
   { new: true })
   .then((card) => {
     if(!card){
-      return res.status(404).send('Карточка не найдена');
+      return res.status(404).send({message:'Карточка не найдена'});
     };
     return res.status(200).send(cards);
   })

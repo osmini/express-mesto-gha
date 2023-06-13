@@ -6,7 +6,7 @@ const getUsers = (req, res) => {
   return User.find({})
     .then((users) => {
       if(!users){
-        return res.status(404).send('Пользователи не найдены');
+        return res.status(404).send({message:'Пользователи не найдены'});
       };
       return res.status(200).send(users);
     })
@@ -26,10 +26,10 @@ const getUsersById = (req, res) => {
   })
   .catch((err) =>{
     if(err.message === 'NotValidId'){
-      return res.status(404).send('Пользователь не найден');
+      return res.status(404).send({message:'Пользователь не найден'});
     };
     if(err.name === 'CastError'){
-      return res.status(400).send('Передан некорректный id пользователя');
+      return res.status(400).send({message:'Передан некорректный id пользователя'});
     };
     return res.status(500).send(err.message);
   })
@@ -45,7 +45,7 @@ const createUsers = (req, res) => {
   })
   .catch((err) =>{
     if (err.name === 'ValidationError'){
-      return res.status(400).send('переданы некорректные данные пользователя');
+      return res.status(400).send({message:'переданы некорректные данные пользователя'});
     };
     return res.status(500).send(err.message);
   })
@@ -63,7 +63,7 @@ const updatetUsers = (req, res) => {
     })
     .catch((err) =>{
       if(err.message === 'NotValidId'){
-        return res.status(404).send('Пользователь не найден');
+        return res.status(404).send({message:'Пользователь не найден'});
       };
       return res.status(500).send(err.message);
     })
@@ -81,7 +81,7 @@ const updatetAvatar = (req, res) => {
     })
     .catch((err) =>{
       if(err.message === 'NotValidId'){
-        return res.status(404).send('Пользователь не найден');
+        return res.status(404).send({message: 'Пользователь не найден'});
       };
       return res.status(500).send(err.message);
     })
