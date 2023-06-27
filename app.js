@@ -3,6 +3,7 @@ const express = require('express'); // импортируем библиотек
 const bodyParser = require('body-parser'); // импортируем парсер json
 const routes = require('./routes/index'); // импортируем модуль всех роутеров приложения
 const mongoose = require('mongoose'); //подключаем mongoose
+const errors = require('./middlewares/errors'); // импортируем модуль обработки ошибок
 
 const {PORT = 3000} = process.env; // вынесли порт по умолчанию в переменную окружения проекта
 
@@ -19,14 +20,6 @@ const app = express(); // создаем приложение
 // важно писать запуск middleware в определенной очередности запросов
 app.use(bodyParser.json()); // подключаем обработку json всех запросах к серверу
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '648476afc6258b5f9eee415e', // вставьте сюда _id созданного в предыдущем пункте пользователя
-  };
-
-  next();
-});
-
 // обработка запроса по адресу "/" методом get
 app.get('/', (req, res) => {
   res.status(200);
@@ -34,6 +27,7 @@ app.get('/', (req, res) => {
 });
 
 app.use(routes); // подключаем обработку всех роутеров
+app.use(errors); // подключаем обработку ошибок после выполнения роутов
 
 // запускаем сервер на порту 3000, с этого порта слушаем все входящие запросы
 app.listen(PORT, () => {
