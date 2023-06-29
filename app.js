@@ -3,7 +3,8 @@ const express = require('express'); // импортируем библиотек
 const bodyParser = require('body-parser'); // импортируем парсер json
 const routes = require('./routes/index'); // импортируем модуль всех роутеров приложения
 const mongoose = require('mongoose'); //подключаем mongoose
-const errors = require('./middlewares/errors'); // импортируем модуль обработки ошибок
+const hendlerErrors = require('./middlewares/errors'); // импортируем модуль обработки ошибок
+const { errors } = require('celebrate'); // обработка ошибок от библиотеки celebrate (Валидация приходящих на сервер данных)
 
 const {PORT = 3000} = process.env; // вынесли порт по умолчанию в переменную окружения проекта
 
@@ -27,7 +28,8 @@ app.get('/', (req, res) => {
 });
 
 app.use(routes); // подключаем обработку всех роутеров
-app.use(errors); // подключаем обработку ошибок после выполнения роутов
+app.use(errors()); // // обработка ошибок celebrate
+app.use(hendlerErrors); // подключаем обработку ошибок после выполнения роутов
 
 // запускаем сервер на порту 3000, с этого порта слушаем все входящие запросы
 app.listen(PORT, () => {

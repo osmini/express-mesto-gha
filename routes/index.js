@@ -2,15 +2,17 @@ const router = require('express').Router(); // подключаем библио
 const usersRouters = require('./users'); // импортируем модуль роутеров пользователей
 const usersCards = require('./cards'); // импортируем модуль роутеров карточек
 const auth = require('../middlewares/auth'); // мидлевар защиты роутов от тех кто не авторизовался
+const NotFoundErrors = require('../errors/notFoundErrors'); // подключаем класс ошибок 404
+const celebrates = require('../middlewares/celebrateUser'); // валидация приходящих на сервер данных
 
 // импорт всех контролеров для работы с пользователями
 const {createUser, login} = require('../controllers/users');
 
 // обработка запроса регистрации нового пользователя
-router.post('/signup', createUser);
+router.post('/signup', celebrates.login, createUser);
 
 // обработка запроса авторизации пользователя
-router.post('/signin', login);
+router.post('/signin', celebrates.login, login);
 
 // роуты ниже этой записи защищены от входа незарегистрированных пользователей
 router.use(auth);
@@ -20,7 +22,7 @@ router.use('/cards', usersCards); // подключаем обработку р�
 
 // обработка несуществующего роута
 router.use((req, res, next) => {
-  res.status(404).send({message: 'Маршрут не найден'})
+  throw new  NotFoundErrors('Маршрут не найден');
 });
 
 module.exports = router;

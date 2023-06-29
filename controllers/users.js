@@ -12,6 +12,7 @@ const JWT_SECRET = 'super-strong-secret'; // константа для шифр�
 
 // регистрация нового пользователя
 // next используется для централизованной обработки ошибок
+// next не прерывает выполнение кода, поэтому код описанный ниже все равно выполнится, нужно выходить из метода при помощи return после выполнения блока next
 const createUser = (req, res, next) => {
   const {email, password, name, about, avatar} = req.body;
 
@@ -24,6 +25,7 @@ const createUser = (req, res, next) => {
     .then((newUser) => {
       if (newUser){
         next (new ConflictError('Такой пользователь уже существует'));
+        return;
       }
 
       // если пользователя нет в базе, то создаем нового пользователя и
@@ -37,6 +39,10 @@ const createUser = (req, res, next) => {
           .catch((err) =>{
             if (err.name === 'ValidationError'){
               next (new BadRequestError('Переданы некорректные данные пользователя'));
+              return;
+              // В случае непредвиденной ошибки ответ повиснет, если условие if не сработало, то нужно направлять ошибку в блок next, чтобы вернулся код ответа 500:
+            } else {
+              next(err);
             };
           })
       });
@@ -56,16 +62,21 @@ const login = (req, res, next) => {
     .then((user) => {
       if (!user){
         next (new ForbiddenError('Такого пользователя не существует'));
+        return;
       }
       bcrypt.compare(password, user.password, function(err, passwordMatch){   // проводим проверку пароля предварительно его расшифровав
         if (!passwordMatch){
           next (new ForbiddenError('Неправельный пароль'));
+          return;
         }
         // создаем и отдаем токен
         const token = jwt.sign({_id: user._id}, JWT_SECRET, {expiresIn: '7d'});
         return res.status(200).send({token: token});
       });
-  });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 // получить всех пользователей
@@ -75,9 +86,13 @@ const getUsers = (req, res, next) => {
     .then((users) => {
       if(!users){
         next (new NotFoundErrors('Пользователи не найдены'));
+        return;
       };
       return res.status(200).send(users);
     })
+    .catch((err) => {
+        next(err);
+    });
 };
 
 // получить одного пользователя по id
@@ -92,9 +107,15 @@ const getUsersById = (req, res, next) => {
   .catch((err) =>{
     if(err.message === 'NotValidId'){
       next (new NotFoundErrors('Пользователь не найден'));
+      return;
+    } else {
+      next(err);
     };
     if(err.name === 'ValidationError'){
       next (new BadRequestError('Передан некорректный id пользователя'));
+      return;
+    } else {
+      next(err);
     };
   })
 };
@@ -111,9 +132,15 @@ const getInfoMe = (req, res, next) => {
   .catch((err) =>{
     if(err.message === 'NotValidId'){
       next (new NotFoundErrors('Пользователь не найден'));
+      return;
+    } else {
+      next(err);
     };
     if(err.name === 'ValidationError'){
       next (new BadRequestError('Передан некорректный id пользователя'));
+      return;
+    } else {
+      next(err);
     };
   })
 };
@@ -131,6 +158,9 @@ const updatetUsers = (req, res, next) => {
     .catch((err) =>{
       if(err.message === 'NotValidId'){
         next (new NotFoundErrors('Пользователь не найден'));
+        return;
+      } else {
+        next(err);
       };
     })
 };
@@ -148,6 +178,9 @@ const updatetAvatar = (req, res, next) => {
     .catch((err) =>{
       if(err.message === 'NotValidId'){
         next (new NotFoundErrors('Пользователь не найден'));
+        return;
+      } else {
+        next(err);
       };
     })
 };
